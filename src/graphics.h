@@ -10,39 +10,35 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "model.h"
+#include "entity.h"
 
 using namespace std;
 
 class Graphics {
 
 public:
-	Graphics(GLFWwindow*& window, Model*& model);
+	Graphics(GLFWwindow* window);
 	~Graphics(void);
 
-	int genBuffer(void);
-	void storeBufferData(GLfloat data[], int size);
-	void render(void);
-
+	void render(Entity& e);
+	void storeBufferData(GLfloat data[], int size, GLuint vboID);
+	static GLuint genBuffer(void);
 private:
-	GLFWwindow* window;
+	static std::vector<GLuint> vaos;
+	static std::vector<GLuint> vbos;
+
 	GLuint renderingProgram;
-	GLuint vao;
-	GLuint vbo;
 	GLuint mvLoc, projLoc;
 	int width, height;
 	float cameraX, cameraY, cameraZ;
 	float aspect;
-	glm::mat4 pMat, vMat, mMat, mvMat;
-
+	glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat;
 	GLuint loadShader(int shaderTYPE, const char* filePath);
 	GLuint createShaderProgram(const char* vp, const char* fp);
 	int finalizeShaderProgram(GLuint sprogram);
 	bool checkOpenGLError(void);
 	void printProgramLog(int prog);
 
-	Model* model;
 };
-
 
 #endif

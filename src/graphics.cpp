@@ -1,57 +1,71 @@
 #include "graphics.h"
 
-Graphics::Graphics(GLFWwindow*& window, Model*& model) {
+vector<GLuint> Graphics::vaos;
+vector<GLuint> Graphics::vbos;
+
+Graphics::Graphics(GLFWwindow* window) {
+
+	glfwGetFramebufferSize(window, &width, &height);
+	aspect = (float)width / (float)height;
+	glViewport(0, 0, width, height);
+	pMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);
+
 	cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
 
-	this->model = model;
-	this->window = window;
 
 	renderingProgram = createShaderProgram("shaders/vertShader.glsl", "shaders/fragShader.glsl");
-	genBuffer();
-	
-	storeBufferData(model->getVertices(), model->getSize());
 }
 
 Graphics::~Graphics() {
-	glDeleteBuffers(1, &vbo);
+	for (GLuint i : vaos) {
+		glDeleteVertexArrays(1, &i);
+	}
+
+	for (GLuint i : vbos) {
+		glDeleteBuffers(1, &i);
+	}
+	
 	glDeleteProgram(renderingProgram);
-
-	delete model;
-	delete this;
 }
 
-int Graphics::genBuffer() {
-	glGenBuffers(1, &vbo);
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	return 0;
+GLuint Graphics::genBuffer() {
+	GLuint vboID, vaoID;
+	glGenBuffers(1, &vboID);
+	vbos.push_back(vboID);
+	glGenVertexArrays(1, &vaoID);
+	glBindVertexArray(vaoID);
+	vaos.push_back(vaoID);
+	return vboID;
 }
 
-void Graphics::storeBufferData(GLfloat data[], int size) {
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+void Graphics::storeBufferData(GLfloat data[], int size, GLuint vboID) {
+	glBindBuffer(GL_ARRAY_BUFFER, vboID);
 	glBufferData(GL_ARRAY_BUFFER, size * sizeof(data), data, GL_STATIC_DRAW);
 }
 
-void Graphics::render() {
+void Graphics::render(Entity& e) {
 	glUseProgram(renderingProgram);
 	glEnableVertexAttribArray(0);
 
 	mvLoc = glGetUniformLocation(renderingProgram, "mv_matrix");
 	projLoc = glGetUniformLocation(renderingProgram, "proj_matrix");
 
-	glfwGetFramebufferSize(window, &width, &height);
-	aspect = (float)width / (float)height;
-	pMat = glm::perspective(1.57f, aspect, 0.1f, 1000.0f);
+	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY - 2, -cameraZ));
+	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getRotY(), e.getRotZ()));
 
-	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ));
-	mMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, 0.0f));
+	rMat = glm::rotate(glm::mat4(1.0f), e.getRotY(), glm::vec3(0.0f, 1.0f, 0.0f));
+	rMat = glm::rotate(rMat, e.getRotX(), glm::vec3(1.0f, 0.0f, 0.0f));
+	rMat = glm::rotate(rMat, e.getRotZ(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	mMat = tMat * rMat;
+
 	mvMat = vMat * mMat;
-	
+
 	glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, e.getModel().getVBOID());
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-	glDrawArrays(GL_TRIANGLES, 0, model->getSize());
+	glDrawArrays(GL_TRIANGLES, 0, e.getModel().getSize());
 	glDisableVertexAttribArray(0);
 	glUseProgram(0);
 }
@@ -70,7 +84,7 @@ GLuint Graphics::loadShader(int shaderTYPE, const char* filePath) {
 	}
 	fileStream.close();
 
-	
+
 	shaderSrc = shaderStr.c_str();
 	shaderRef = glCreateShader(shaderTYPE);
 	glShaderSource(shaderRef, 1, &shaderSrc, NULL);
