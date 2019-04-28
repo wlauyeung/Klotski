@@ -26,7 +26,7 @@ Game::Game(const int width, const int height) {
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		display(window, glfwGetTime());
+		display(window);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -51,33 +51,48 @@ Scene& Game::getCurrentScene() {
 }
 
 void Game::registerModels() {
-	float* rectVertices = new float[108]{
-	-1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-		1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,
-		-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f
+	float* cubeVertices = new float[108]{
+		0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, -1.0f, 1.0f,
+		0.0f, -1.0f, 1.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
+		0.0f, -1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		0.0f, -1.0f, 1.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
 	};
-	Model::CUBE = new Model(rectVertices, 108, Graphics::genBuffer());
-	
-	float* pyramidPositions = new float[54]{
-		-1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f
-	};
-	Model::PYRAMID = new Model(pyramidPositions, 54, Graphics::genBuffer());
 
-	float* rectanglePositions = new float[18]{
+	Model::CUBE = new Model(cubeVertices, 108, Graphics::genBuffer());
+	
+	float* rectangleVertices = new float[18]{
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -85,14 +100,14 @@ void Game::registerModels() {
 		1.0f, 1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f
 	};
-	Model::RECTANGLE = new Model(rectanglePositions, 20, Graphics::genBuffer());
+
+	Model::RECTANGLE = new Model(rectangleVertices, 108, Graphics::genBuffer());
 
 	Model::getModels().push_back(Model::RECTANGLE);
 	Model::getModels().push_back(Model::CUBE);
-	Model::getModels().push_back(Model::PYRAMID);
 }
 
-void Game::display(GLFWwindow* window, double currentTime) {
+void Game::display(GLFWwindow* window) {
 	for (Entity* e : currentScene->getEntities()) {
 		graphics->render(*e);
 	}

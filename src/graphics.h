@@ -10,7 +10,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "entity.h"
+#include "entities/entity.h"
 
 using namespace std;
 
@@ -32,7 +32,7 @@ private:
 	int width, height;
 	float cameraX, cameraY, cameraZ;
 	float aspect;
-	glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat;
+	glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat, sMat;
 	GLuint loadShader(int shaderTYPE, const char* filePath);
 	GLuint createShaderProgram(const char* vp, const char* fp);
 	int finalizeShaderProgram(GLuint sprogram);

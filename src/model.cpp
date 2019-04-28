@@ -1,7 +1,6 @@
 #include "model.h"
 
 Model* Model::CUBE;
-Model* Model::PYRAMID;
 Model* Model::RECTANGLE;
 std::vector<Model*> Model::models;
 

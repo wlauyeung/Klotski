@@ -1,3 +1,5 @@
+
+
 #include "graphics.h"
 
 vector<GLuint> Graphics::vaos;
@@ -50,14 +52,17 @@ void Graphics::render(Entity& e) {
 	mvLoc = glGetUniformLocation(renderingProgram, "mv_matrix");
 	projLoc = glGetUniformLocation(renderingProgram, "proj_matrix");
 
-	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY - 2, -cameraZ));
-	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getRotY(), e.getRotZ()));
+	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX - 2.0f, -cameraY + 2.0f, -cameraZ - 2.0f));
+	vMat = glm::rotate(vMat, 0.6f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	sMat = glm::scale(glm::mat4(1.0f), glm::vec3(e.getScaleX(), e.getScaleY(), e.getScaleZ()));
+	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getY(), e.getZ()));
 
 	rMat = glm::rotate(glm::mat4(1.0f), e.getRotY(), glm::vec3(0.0f, 1.0f, 0.0f));
 	rMat = glm::rotate(rMat, e.getRotX(), glm::vec3(1.0f, 0.0f, 0.0f));
 	rMat = glm::rotate(rMat, e.getRotZ(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	mMat = tMat * rMat;
+	mMat = tMat * rMat * sMat;
 
 	mvMat = vMat * mMat;
 

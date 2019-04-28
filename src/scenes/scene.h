@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "../entity.h"
+#include "../entities/entity.h"
 #include <vector>
 
 class Scene

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "graphics.h"
-#include "entity.h"
+#include "entities\entity.h"
 #include "scenes\scene.h"
 #include "scenes\sceneTitle.h"
 
@@ -25,7 +25,7 @@ private:
 	Scene* sceneTitle;
 	Graphics* graphics;
 
-	void display(GLFWwindow* window, double currentTime);
+	void display(GLFWwindow* window);
 };
 
 #endif 

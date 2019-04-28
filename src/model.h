@@ -10,7 +10,6 @@ public:
 	Model(float* vertices, const int size, const GLuint vboID);
 	~Model(void);
 	static Model* CUBE; 
-	static Model* PYRAMID;
 	static Model* RECTANGLE;
 
 	static void deleteModels(void);
