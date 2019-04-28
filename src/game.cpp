@@ -101,7 +101,7 @@ void Game::registerModels() {
 		1.0f, 0.0f, 0.0f
 	};
 
-	Model::RECTANGLE = new Model(rectangleVertices, 108, Graphics::genBuffer());
+	Model::RECTANGLE = new Model(rectangleVertices, 18, Graphics::genBuffer());
 
 	Model::getModels().push_back(Model::RECTANGLE);
 	Model::getModels().push_back(Model::CUBE);
