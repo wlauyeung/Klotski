@@ -1,11 +1,13 @@
 #include "game.h"
 
 Game::Game(const int width, const int height) {
+
 	if (!glfwInit()) { exit(EXIT_FAILURE); }
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
 	GLFWwindow* window = glfwCreateWindow(width, height, "Klotski", NULL, NULL);
+
 	glfwMakeContextCurrent(window);
 	if (glewInit() != GLEW_OK) { exit(EXIT_FAILURE); }
 	glfwSwapInterval(1);
@@ -21,11 +23,14 @@ Game::Game(const int width, const int height) {
 	sceneTitle = new SceneTitle();
 	currentScene = sceneTitle;
 	currentScene->load();
+
+	stack = new Stack();
 	
 	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		display(window);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -112,3 +117,18 @@ void Game::display(GLFWwindow* window) {
 		graphics->render(*e);
 	}
 }
+
+void Game::moveIsMade(){
+	std::vector<Entity*> stackElem;
+
+	for (Entity* e : currentScene->getEntities()) {
+		stackElem.push_back(e);
+	}
+	stack->getStack().push_back(stackElem);
+}
+
+void Game::undo() {
+	currentScene->setEntities(stack->getStack().back());
+	stack->getStack().pop_back();
+}
+

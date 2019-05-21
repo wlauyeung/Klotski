@@ -131,6 +131,7 @@
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\scenes\scene.cpp" />
     <ClCompile Include="src\scenes\sceneTitle.cpp" />
+    <ClCompile Include="src\stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\entities\entity.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="src\model.h" />
     <ClInclude Include="src\scenes\scene.h" />
     <ClInclude Include="src\scenes\sceneTitle.h" />
+    <ClInclude Include="src\stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

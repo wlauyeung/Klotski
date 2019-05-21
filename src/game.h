@@ -10,6 +10,7 @@
 #include "entities\entity.h"
 #include "scenes\scene.h"
 #include "scenes\sceneTitle.h"
+#include "stack.h"
 
 class Game {
 public:
@@ -19,11 +20,15 @@ public:
 	void setCurrentScene(Scene& s);
 	Scene& getCurrentScene(void);
 
+	void moveIsMade();
+	void undo();
+
 	static void registerModels();
 private:
 	Scene* currentScene;
 	Scene* sceneTitle;
 	Graphics* graphics;
+	Stack* stack;
 
 	void display(GLFWwindow* window);
 };

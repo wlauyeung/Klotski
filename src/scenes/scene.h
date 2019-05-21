@@ -12,6 +12,7 @@ public:
 	virtual void load(void) = 0;
 	virtual void unload(void) = 0;
 
+	void setEntities(std::vector<Entity*>);
 	std::vector<Entity*>& getEntities(void);
 private:
 	std::vector<Entity*> entities;
