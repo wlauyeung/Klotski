@@ -19,18 +19,28 @@ public:
 
 	void setCurrentScene(Scene& s);
 	Scene& getCurrentScene(void);
+	void start();
 
-	void moveIsMade();
-	void undo();
+	void moveIsMade(void);
+	void undo(void);
 
-	static void registerModels();
+	void setTaggedEntity(Entity* e);
+	Entity* getTaggedEntity(void);
+
+	static void registerModels(void);
+	static Game* game;
+	static Game* getIntance();
+	static void setInstance(Game* game);
+	static int* startMousePos;
 private:
 	Scene* currentScene;
 	Scene* sceneTitle;
-	Graphics* graphics;
 	Stack* stack;
+	GLFWwindow* window;
+	Entity* taggedEntity;
 
 	void display(GLFWwindow* window);
+	static void onMouseClick(GLFWwindow* window, int button, int action, int mods);
 };
 
 #endif 

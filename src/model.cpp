@@ -1,6 +1,5 @@
 #include "model.h"
 
-Model* Model::CUBE;
 Model* Model::RECTANGLE;
 std::vector<Model*> Model::models;
 
@@ -14,28 +13,26 @@ std::vector<Model*>& Model::getModels() {
 	return models;
 }
 
-Model::Model(float* vertices, const int size, const GLuint vboID) {
-	this->vertices = vertices;
-	this->size = size;
-	this->vboID = vboID;
+Model::Model(float* vertices, const int verticesSize, float* colorCoords, const int colorSize, const int vaoID) {
+	this->vaoID = vaoID;
+	arrayList.push_back(vertices);
+	sizeList.push_back(verticesSize);
+	arrayList.push_back(colorCoords);
+	sizeList.push_back(colorSize);
 }
 
 Model::~Model(void) {
-	delete vertices;
+
 }
 
 float* Model::getVertices() {
-	return vertices;
+	return arrayList.at(0);
 }
 
-int Model::getSize() {
-	return size;
+int Model::getVerticesSize() {
+	return sizeList.at(0);
 }
 
-GLuint Model::getVBOID() {
-	return vboID;
-}
-
-void Model::setVBOID(GLuint vboID) {
-	this->vboID = vboID;
+GLuint Model::getVaoID(void) {
+	return vaoID;
 }

@@ -1,9 +1,9 @@
 #version 430
 
-in vec4 varyingColor;
+in vec4 out_color;
 
 out vec4 color;
 
 void main(void) {
-  color = varyingColor;
+	color = out_color;
 }

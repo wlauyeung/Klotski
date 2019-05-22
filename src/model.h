@@ -6,26 +6,22 @@
 #include <GLFW\glfw3.h>
 
 class Model {
-public: 
-	Model(float* vertices, const int size, const GLuint vboID);
+public:
+	Model(float* vertices, const int verticesSize, float* colorCoords, const int colorSize, const int vaoID);
 	~Model(void);
-	static Model* CUBE; 
 	static Model* RECTANGLE;
 
 	static void deleteModels(void);
 	static std::vector<Model*>& getModels(void);
 
 	float* getVertices(void);
-	int getSize(void);
-	GLuint getVBOID(void);
+	int getVerticesSize(void);
+	GLuint getVaoID(void);
 
-	void setVBOID(GLuint vboID);
-
-	
 private:
-	float* vertices;
-	int size;
-	GLuint vboID;
+	std::vector<float*> arrayList;
+	std::vector<int> sizeList;
+	GLuint vaoID;
 
 	static std::vector<Model*> models;
 };

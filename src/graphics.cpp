@@ -1,24 +1,23 @@
-
-
 #include "graphics.h"
 
 vector<GLuint> Graphics::vaos;
 vector<GLuint> Graphics::vbos;
+vector<int> Graphics::attribs;
+int Graphics::width, Graphics::height;
+GLuint Graphics::renderingProgram;
+GLuint Graphics::mLoc, Graphics::projLoc, Graphics::colorLoc;
+glm::mat4 Graphics::pMat, Graphics::mMat, Graphics::tMat, Graphics::sMat, Graphics::cMat;
 
-Graphics::Graphics(GLFWwindow* window) {
-
+void Graphics::init(GLFWwindow* window) {
 	glfwGetFramebufferSize(window, &width, &height);
-	aspect = (float)width / (float)height;
 	glViewport(0, 0, width, height);
-	pMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);
 
-	cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
-
+	pMat = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
 
 	renderingProgram = createShaderProgram("shaders/vertShader.glsl", "shaders/fragShader.glsl");
 }
 
-Graphics::~Graphics() {
+void Graphics::destroy() {
 	for (GLuint i : vaos) {
 		glDeleteVertexArrays(1, &i);
 	}
@@ -26,53 +25,53 @@ Graphics::~Graphics() {
 	for (GLuint i : vbos) {
 		glDeleteBuffers(1, &i);
 	}
-	
+
 	glDeleteProgram(renderingProgram);
-}
-
-GLuint Graphics::genBuffer() {
-	GLuint vboID, vaoID;
-	glGenBuffers(1, &vboID);
-	vbos.push_back(vboID);
-	glGenVertexArrays(1, &vaoID);
-	glBindVertexArray(vaoID);
-	vaos.push_back(vaoID);
-	return vboID;
-}
-
-void Graphics::storeBufferData(GLfloat data[], int size, GLuint vboID) {
-	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(data), data, GL_STATIC_DRAW);
 }
 
 void Graphics::render(Entity& e) {
 	glUseProgram(renderingProgram);
-	glEnableVertexAttribArray(0);
+	glBindVertexArray(e.getModel().getVaoID());
+	enableVertexAttribArrays();
 
-	mvLoc = glGetUniformLocation(renderingProgram, "mv_matrix");
+	mLoc = glGetUniformLocation(renderingProgram, "m_matrix");
 	projLoc = glGetUniformLocation(renderingProgram, "proj_matrix");
+	colorLoc = glGetUniformLocation(renderingProgram, "color_matrix");
 
-	vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX - 2.0f, -cameraY + 2.0f, -cameraZ - 2.0f));
-	vMat = glm::rotate(vMat, 0.6f, glm::vec3(1.0f, 0.0f, 0.0f));
+	sMat = glm::scale(glm::mat4(1.0f), glm::vec3(e.getScaleX(), e.getScaleY(), 1.0f));
+	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getY(), 1.0f));
+	cMat = glm::scale(glm::mat4(1.0f), e.getColor().getRGB());
+	mMat = tMat * sMat;
 
-	sMat = glm::scale(glm::mat4(1.0f), glm::vec3(e.getScaleX(), e.getScaleY(), e.getScaleZ()));
-	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getY(), e.getZ()));
-
-	rMat = glm::rotate(glm::mat4(1.0f), e.getRotY(), glm::vec3(0.0f, 1.0f, 0.0f));
-	rMat = glm::rotate(rMat, e.getRotX(), glm::vec3(1.0f, 0.0f, 0.0f));
-	rMat = glm::rotate(rMat, e.getRotZ(), glm::vec3(0.0f, 0.0f, 1.0f));
-
-	mMat = tMat * rMat * sMat;
-
-	mvMat = vMat * mMat;
-
-	glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
+	glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(mMat));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
-	glBindBuffer(GL_ARRAY_BUFFER, e.getModel().getVBOID());
-	glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-	glDrawArrays(GL_TRIANGLES, 0, e.getModel().getSize());
-	glDisableVertexAttribArray(0);
+	glUniformMatrix4fv(colorLoc, 1, GL_FALSE, glm::value_ptr(cMat));
+	glDrawArrays(GL_TRIANGLES, 0, e.getModel().getVerticesSize());
+	disableVertexAttribArrays();
 	glUseProgram(0);
+}
+
+GLuint Graphics::storeBufferData(int attribNumber, GLfloat data[], int size, int dim) {
+	GLuint vboID;
+	attribs.push_back(attribNumber);
+	glGenBuffers(1, &vboID);
+	vbos.push_back(vboID);
+	glBindBuffer(GL_ARRAY_BUFFER, vboID);
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(data), data, GL_STATIC_DRAW);
+	glVertexAttribPointer(attribNumber, dim, GL_FLOAT, false, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	return vboID;
+}
+
+GLuint Graphics::genVAO(float* vertices, int size, float* colorCoords, int colorSize) {
+	GLuint vaoID;
+	glGenVertexArrays(1, &vaoID);
+	vaos.push_back(vaoID);
+	glBindVertexArray(vaoID);
+	storeBufferData(0, vertices, size, 3);
+	storeBufferData(1, colorCoords, colorSize, 3);
+
+	return vaoID;
 }
 
 GLuint Graphics::loadShader(int shaderTYPE, const char* filePath) {
@@ -149,3 +148,16 @@ void Graphics::printProgramLog(int prog) {
 		free(log);
 	}
 }
+
+void Graphics::enableVertexAttribArrays() {
+	for (int i : attribs) {
+		glEnableVertexAttribArray(i);
+	}
+}
+
+void Graphics::disableVertexAttribArrays() {
+	for (int i : attribs) {
+		glDisableVertexAttribArray(i);
+	}
+}
+

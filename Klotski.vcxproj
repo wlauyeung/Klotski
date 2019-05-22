@@ -123,8 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\entities\entity.cpp" />
-    <ClCompile Include="src\entities\entityCube.cpp" />
+    <ClCompile Include="src\entities\entityRectangle.cpp" />
+    <ClCompile Include="src\entities\entityUndoButton.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\graphics.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -134,8 +136,10 @@
     <ClCompile Include="src\stack.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\entities\entity.h" />
-    <ClInclude Include="src\entities\entityCube.h" />
+    <ClInclude Include="src\entities\entityRectangle.h" />
+    <ClInclude Include="src\entities\entityUndoButton.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\graphics.h" />
     <ClInclude Include="src\model.h" />

@@ -3,7 +3,8 @@
 
 #include "scene.h"
 #include "../model.h"
-#include "../entities/entityCube.h"
+#include "../entities/entityRectangle.h"
+#include "../entities/entityUndoButton.h"
 
 class SceneTitle : public Scene {
 public:

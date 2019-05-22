@@ -11,34 +11,36 @@
 #include <string>
 #include <vector>
 #include "entities/entity.h"
+#include "model.h"
 
 using namespace std;
 
 class Graphics {
 
 public:
-	Graphics(GLFWwindow* window);
-	~Graphics(void);
+	static void init(GLFWwindow* window);
+	static void destroy(void);
 
-	void render(Entity& e);
-	void storeBufferData(GLfloat data[], int size, GLuint vboID);
-	static GLuint genBuffer(void);
+	static void render(Entity& e);
+	static GLuint storeBufferData(int attribNumber, GLfloat data[], int size, int dim);
+
+	static GLuint genVAO(float* vertices, int size, float* colorCoords, int colorSize);
 private:
 	static std::vector<GLuint> vaos;
 	static std::vector<GLuint> vbos;
+	static std::vector<int> attribs;
+	static GLuint renderingProgram;
+	static GLuint mLoc, projLoc, colorLoc;
+	static int width, height;
+	static glm::mat4 pMat, mMat, tMat, sMat, cMat;
 
-	GLuint renderingProgram;
-	GLuint mvLoc, projLoc;
-	int width, height;
-	float cameraX, cameraY, cameraZ;
-	float aspect;
-	glm::mat4 pMat, vMat, mMat, mvMat, tMat, rMat, sMat;
-	GLuint loadShader(int shaderTYPE, const char* filePath);
-	GLuint createShaderProgram(const char* vp, const char* fp);
-	int finalizeShaderProgram(GLuint sprogram);
-	bool checkOpenGLError(void);
-	void printProgramLog(int prog);
-
+	static GLuint loadShader(int shaderTYPE, const char* filePath);
+	static GLuint createShaderProgram(const char* vp, const char* fp);
+	static int finalizeShaderProgram(GLuint sprogram);
+	static bool checkOpenGLError(void);
+	static void printProgramLog(int prog);
+	static void enableVertexAttribArrays(void);
+	static void disableVertexAttribArrays(void);
 };
 
 #endif

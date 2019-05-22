@@ -10,16 +10,21 @@ SceneTitle::~SceneTitle() {
 }
 
 void SceneTitle::load() {
-	getEntities().push_back(new EntityCube(0, 0, 1, 2)); // most top left block
-	getEntities().push_back(new EntityCube(1, 0, 2, 2)); // 2x2 block 
-	getEntities().push_back(new EntityCube(3, 0, 1, 2)); // most top right block
-	getEntities().push_back(new EntityCube(0, 2, 1, 2)); // middle left block
-	getEntities().push_back(new EntityCube(3, 2, 1, 2)); // middle right block
-	getEntities().push_back(new EntityCube(1, 2, 2, 1)); // 2x1 middle block
-	getEntities().push_back(new EntityCube(1, 3, 1, 1)); // 1x1 middle left block
-	getEntities().push_back(new EntityCube(2, 3, 1, 1)); // 1x1 middle right block
-	getEntities().push_back(new EntityCube(0, 4, 1, 1)); // most bottom left block
-	getEntities().push_back(new EntityCube(3, 4, 1, 1)); // most bottom right block
+	getEntities().push_back(new EntityRectangle(570, 160, 140, 140, Color::RED, 0)); //center 2x2
+	getEntities().push_back(new EntityRectangle(500, 160, 70, 140, Color::GREEN, 0)); // top 1x2 left
+	getEntities().push_back(new EntityRectangle(710, 160, 70, 140, Color::GREEN, 0)); // top 1x2 right
+	getEntities().push_back(new EntityRectangle(500, 300, 70, 140, Color::GREEN, 0)); // mid 1x2 left
+	getEntities().push_back(new EntityRectangle(710, 300, 70, 140, Color::GREEN, 0)); // mid 1x2 right
+	getEntities().push_back(new EntityRectangle(570, 300, 140, 70, Color::YELLOW, 0)); // mid 2x1
+	getEntities().push_back(new EntityRectangle(570, 370, 70, 70, Color::BLUE, 0)); // mid 1x1 left
+	getEntities().push_back(new EntityRectangle(640, 370, 70, 70, Color::BLUE, 0)); // mid 1x1 right
+	getEntities().push_back(new EntityRectangle(500, 440, 70, 70, Color::BLUE, 0)); // bottom 1x1 left
+	getEntities().push_back(new EntityRectangle(710, 440, 70, 70, Color::BLUE, 0)); // bottom 1x1 right
+	getEntities().push_back(new EntityUndoButton(100, 160, 140, 70, Color::BLUE)); // undo button
+	getEntities().push_back(new EntityRectangle(100, 240, 140, 70, Color::BLUE, 1)); // undo button
+
+
+
 }
 
 void SceneTitle::unload() {
