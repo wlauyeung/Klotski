@@ -297,6 +297,14 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 						}
 					}
 				}
+				if ((game->getTaggedEntity()->getFilePath() == "res/red.jpg") &&
+					((game->getTaggedEntity()->getX() + 140) == 540) &&
+					(game->getTaggedEntity()->getY() == 160)) {
+					printf("You win!");
+				}
+			}
+			{
+			
 			}
 			game->setTaggedEntity(0);
 		}
