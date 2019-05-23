@@ -5,8 +5,8 @@ vector<GLuint> Graphics::vbos;
 vector<int> Graphics::attribs;
 int Graphics::width, Graphics::height;
 GLuint Graphics::renderingProgram;
-GLuint Graphics::mLoc, Graphics::projLoc, Graphics::colorLoc;
-glm::mat4 Graphics::pMat, Graphics::mMat, Graphics::tMat, Graphics::sMat, Graphics::cMat;
+GLuint Graphics::mLoc, Graphics::projLoc;
+glm::mat4 Graphics::pMat, Graphics::mMat, Graphics::tMat, Graphics::sMat;
 
 void Graphics::init(GLFWwindow* window) {
 	glfwGetFramebufferSize(window, &width, &height);
@@ -36,11 +36,9 @@ void Graphics::render(Entity& e) {
 
 	mLoc = glGetUniformLocation(renderingProgram, "m_matrix");
 	projLoc = glGetUniformLocation(renderingProgram, "proj_matrix");
-	colorLoc = glGetUniformLocation(renderingProgram, "color_matrix");
 
 	sMat = glm::scale(glm::mat4(1.0f), glm::vec3(e.getScaleX(), e.getScaleY(), 1.0f));
 	tMat = glm::translate(glm::mat4(1.0f), glm::vec3(e.getX(), e.getY(), 1.0f));
-	cMat = glm::scale(glm::mat4(1.0f), e.getColor().getRGB());
 	mMat = tMat * sMat;
 
 	glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(mMat));

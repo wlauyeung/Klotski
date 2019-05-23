@@ -1,12 +1,11 @@
 #include "entity.h"
 
-Entity::Entity(Model* model, float x, float y, float scaleX, float scaleY, const Color& color, const char* filePath) {
+Entity::Entity(Model* model, float x, float y, float scaleX, float scaleY, const char* filePath) {
 	this->model = model;
 	this->x = x;
 	this->y = y;
 	this->scaleX = scaleX;
 	this->scaleY = scaleY;
-	this->color = color;
 	entityTex = new Texture(filePath);
 	entityTex->mipmapping();
 }
@@ -49,14 +48,6 @@ void Entity::setScaleX(float scaleX) {
 
 void Entity::setScaleY(float scaleY) {
 	this->scaleY = scaleY;
-}
-
-Color Entity::getColor() {
-	return color;
-}
-
-void Entity::setColor(Color& color) {
-	this->color = color;
 }
 
 void Entity::move(float x, float y) {

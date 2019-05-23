@@ -5,7 +5,7 @@
 
 class EntityRectangle : public Entity {
 public:
-	EntityRectangle(int x, int y, int width, int height, const Color& color, int isButton, const char* filePath);
+	EntityRectangle(int x, int y, int width, int height, int isButton, const char* filePath);
 
 	int isButton(void);
 	void action(void);

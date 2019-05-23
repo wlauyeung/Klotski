@@ -30,9 +30,9 @@ private:
 	static std::vector<GLuint> vbos;
 	static std::vector<int> attribs;
 	static GLuint renderingProgram;
-	static GLuint mLoc, projLoc, colorLoc;
+	static GLuint mLoc, projLoc;
 	static int width, height;
-	static glm::mat4 pMat, mMat, tMat, sMat, cMat;
+	static glm::mat4 pMat, mMat, tMat, sMat;
 
 	static GLuint loadShader(int shaderTYPE, const char* filePath);
 	static GLuint createShaderProgram(const char* vp, const char* fp);

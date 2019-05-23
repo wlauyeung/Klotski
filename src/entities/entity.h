@@ -7,7 +7,7 @@
 
 class Entity {
 public:
-	Entity(Model* model, float x, float y, float scaleX, float scaleY, const Color& color, const char* filePath);
+	Entity(Model* model, float x, float y, float scaleX, float scaleY, const char* filePath);
 	
 	~Entity(void);
 
@@ -25,15 +25,11 @@ public:
 	void setScaleX(float scaleX);
 	void setScaleY(float scaleY);
 
-	Color getColor(void);
-	void setColor(Color& color);
-
 	void move(float x, float y);
 	GLuint getTextureID(void);
 private:
 	Model* model;
 	float x, y, scaleX, scaleY;
-	Color color;
 	Texture* entityTex;
 };
 
