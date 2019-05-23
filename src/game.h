@@ -22,9 +22,11 @@ public:
 	void start(void);
 	void stop(void);
 
-	std::vector<std::vector<Entity*> >& getGameStack(void);
-	void updateStack(void);
-	void undo(void);
+	std::vector<Entity*>* getEntityStack(void);
+	std::vector<int>* getIntStack(void);
+	void updateStacks(Entity*, int, int);
+	Entity* entityUndo(void);
+	int* coorUndo(void);
 
 	void setTaggedEntity(Entity* e);
 	Entity* getTaggedEntity(void);
@@ -37,7 +39,8 @@ public:
 private:
 	Scene* currentScene;
 	Scene* sceneTitle;
-	Stack* stack;
+	Stack<Entity*>* entityStack;
+	Stack<int>* coorStack;
 	GLFWwindow* window;
 	Entity* taggedEntity;
 

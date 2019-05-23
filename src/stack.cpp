@@ -4,18 +4,23 @@
 
 #include "stack.h"
 
-Stack::Stack() {
+/*
+template<typename T>
+Stack<T>::Stack() {
 
 }
 
-Stack::~Stack() {
-	/*for (std::vector<Entity*> v : stackVector) {
+template<typename T>
+Stack<T>::~Stack() {
+	for (std::vector<Entity*> v : stackVector) {//comment out
 		for (Entity* e : v) {
 			delete e;
 		}
-	}*/
+	}
 }
 
-std::vector<std::vector<Entity*> >& Stack::getStack() {
-	return stackVector;
+template<typename T>
+std::vector<T> Stack<T>::getStack() {
+	return stack;
 }
+*/

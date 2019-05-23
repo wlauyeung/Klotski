@@ -26,7 +26,8 @@ Game::Game(const int width, const int height) {
 
 Game::~Game() {
 	delete sceneTitle;
-	delete stack;
+	delete entityStack;
+	delete coorStack;
 	delete startMousePos;
 	Graphics::destroy();
 	Model::deleteModels();
@@ -49,8 +50,8 @@ void Game::start() {
 
 	startMousePos = new int[2];
 
-	stack = new Stack();
-	getGameStack().push_back(currentScene->getEntities());
+	entityStack = new Stack<Entity*>();
+	coorStack = new Stack<int>();
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -97,24 +98,43 @@ void Game::display(GLFWwindow* window) {
 	}
 }
 
-std::vector<std::vector<Entity*> >& Game::getGameStack() {
-	return stack->getStack();
+std::vector<Entity*>* Game::getEntityStack() {
+	return entityStack->getStack();
 }
 
-void Game::updateStack() {
-	std::vector<Entity*> stackElem;
-
-	for (Entity* e : currentScene->getEntities()) {
-		stackElem.push_back(e);
-	}
-	getGameStack().push_back(stackElem);
+std::vector<int>* Game::getIntStack() {
+	return coorStack->getStack();
 }
 
-void Game::undo() {
-	if (getGameStack().size() > 1) {
-		currentScene->setEntities(getGameStack().back());
-		getGameStack().pop_back();
+void Game::updateStacks(Entity* e, int x, int y) {
+	getEntityStack()->push_back(e);
+	getIntStack()->push_back((int)(e->getY()) - y);
+	getIntStack()->push_back((int)(e->getX()) - x);
+}
+
+Entity* Game::entityUndo() {
+	Entity* entity = 0;
+	if (getEntityStack()->size() > 0) {
+		entity = getEntityStack()->back();
+		//printf("%d, %d", (int)entity->getX(), (int)entity->getY()); coordinates are right
+		getEntityStack()->pop_back();
 	}
+	//printf("%d, %d", (int)entity->getX(), (int)entity->getY()); coordinates are right
+	return entity;
+}
+
+int* Game::coorUndo() {
+	int xCoor, yCoor;
+	int* coordinates = new int[2];
+	if (getIntStack()->size() > 1) {
+		xCoor = (int)getIntStack()->back();
+		getIntStack()->pop_back();
+		yCoor = (int)getIntStack()->back();
+		getIntStack()->pop_back();
+		*(coordinates + 0) = xCoor;
+		*(coordinates + 1) = yCoor;
+	}
+	return coordinates;
 }
 
 void Game::setTaggedEntity(Entity* e) {
@@ -137,13 +157,27 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 				if (x >= e->getX() && x <= e->getX() + e->getScaleX()
 					&& y >= e->getY() && y <= e->getY() + e->getScaleY()) {
 					if (EntityUndoButton* button = dynamic_cast<EntityUndoButton*> (e)) {
-						button->action(game->getGameStack());
-						game->undo();
+						Entity* entityToMove = 0;
+						int* currentCoor = new int[2];
+						int* previousCoor;
+						button->action();
+						entityToMove = game->entityUndo();
+						if (&(*entityToMove)) {
+							printf("Undo!\n");
+							previousCoor = game->coorUndo();
+							*(currentCoor + 0) = (int)(entityToMove->getX()); 
+							*(currentCoor + 1)= ((int)(entityToMove->getY()));
+
+							entityToMove->move(previousCoor[0] - currentCoor[0], previousCoor[1] - currentCoor[1]);
+						}
+						else {
+							printf("Nothing to undo!\n");
+						}
 					}
 					else if (EntityExitButton* button = dynamic_cast<EntityExitButton*> (e)) {
 						button->action();
 					}
-					else if(e->isClickable()){
+					else if (e->isClickable()) {
 						game->setTaggedEntity(e);
 						startMousePos[0] = (int)x;
 						startMousePos[1] = (int)y;
@@ -157,7 +191,6 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 			if (game->getTaggedEntity()) {
 				if (x - startMousePos[0] != 0
 					&& y - startMousePos[1] != 0) {
-					game->updateStack();
 					if (abs(x - startMousePos[0]) > abs(y - startMousePos[1])) {
 						if (x - startMousePos[0] < 0) {
 							// move left
@@ -171,7 +204,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 										(game->getTaggedEntity()->getY() < (e->getY() + e->getScaleY()))) ||
 										(e->getY() < (game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY()) &&
 										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() <= (e->getY() + e->getScaleY()))))) ||
-										(game->getTaggedEntity()->getX() - 70 < 500)
+										(game->getTaggedEntity()->getX() - 70 < 90)
 										)
 									{
 										collision = 1;
@@ -180,6 +213,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 							}
 							if (!collision) {
 								game->getTaggedEntity()->move(-70, 0);
+								game->updateStacks(game->getTaggedEntity(), -70, 0);
 							}
 							collision = 0;
 						}
@@ -195,7 +229,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 										(game->getTaggedEntity()->getY() < (e->getY() + e->getScaleY()))) ||
 										(e->getY() < (game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY()) &&
 										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() <= (e->getY() + e->getScaleY()))))) ||
-										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() + 70 > 780)
+										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() + 70 > 370)
 										)
 									{
 										collision = 1;
@@ -203,7 +237,8 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 								}
 							}
 							if (!collision) {
-								game->getTaggedEntity()->move(70, 0);
+								game->getTaggedEntity()->move(70, 0); 
+								game->updateStacks(game->getTaggedEntity(), 70, 0);
 							}
 							collision = 0;
 						}
@@ -221,7 +256,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 										(game->getTaggedEntity()->getX() < (e->getX() + e->getScaleX()))) ||
 										(e->getX() < (game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX()) &&
 										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() <= (e->getX() + e->getScaleX()))))) ||
-										(game->getTaggedEntity()->getY() - 70 < 160)
+										(game->getTaggedEntity()->getY() - 70 < 190)
 										)
 									{
 										collision = 1;
@@ -230,6 +265,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 							}
 							if (!collision) {
 								game->getTaggedEntity()->move(0, -70);
+								game->updateStacks(game->getTaggedEntity(), 0, -70);
 							}
 							collision = 0;
 						}
@@ -245,7 +281,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 										(game->getTaggedEntity()->getX() < (e->getX() + e->getScaleX()))) ||
 										(e->getX() < (game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX()) &&
 										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() <= (e->getX() + e->getScaleX()))))) ||
-										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleX() + 70 > 510)
+										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleX() + 70 > 540)
 										)
 									{
 										collision = 1;
@@ -254,11 +290,13 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 							}
 							if (!collision) {
 								game->getTaggedEntity()->move(0, 70);
+								game->updateStacks(game->getTaggedEntity(), 0, 70);
 							}
+							game->updateStacks(game->getTaggedEntity(), 0, 70);
 							collision = 0;
 						}
 					}
-}
+				}
 			}
 			game->setTaggedEntity(0);
 		}
