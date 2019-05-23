@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\entities\entity.cpp" />
+    <ClCompile Include="src\entities\entityExitButton.cpp" />
     <ClCompile Include="src\entities\entityRectangle.cpp" />
     <ClCompile Include="src\entities\entityUndoButton.cpp" />
     <ClCompile Include="src\game.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\entities\entity.h" />
+    <ClInclude Include="src\entities\entityExitButton.h" />
     <ClInclude Include="src\entities\entityRectangle.h" />
     <ClInclude Include="src\entities\entityUndoButton.h" />
     <ClInclude Include="src\game.h" />

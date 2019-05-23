@@ -5,6 +5,7 @@ EntityUndoButton::EntityUndoButton(int x, int y, int width, int height, const ch
 }
 
 void EntityUndoButton::action() {
+	std::cout << "Undo!\n";	
 }
 
 

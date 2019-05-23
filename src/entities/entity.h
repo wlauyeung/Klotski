@@ -7,7 +7,7 @@
 
 class Entity {
 public:
-	Entity(Model* model, float x, float y, float scaleX, float scaleY, const char* filePath);
+	Entity(Model* model, float x, float y, float scaleX, float scaleY, int isClickable, const char* filePath);
 	
 	~Entity(void);
 
@@ -27,10 +27,15 @@ public:
 
 	void move(float x, float y);
 	GLuint getTextureID(void);
+
+	int isClickable(void);
+
+	virtual void action(void) = 0;
 private:
 	Model* model;
 	float x, y, scaleX, scaleY;
 	Texture* entityTex;
+	int clickable;
 };
 
 #endif

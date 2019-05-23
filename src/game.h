@@ -19,7 +19,8 @@ public:
 
 	void setCurrentScene(Scene& s);
 	Scene& getCurrentScene(void);
-	void start();
+	void start(void);
+	void stop(void);
 
 	void moveIsMade(void);
 	void undo(void);

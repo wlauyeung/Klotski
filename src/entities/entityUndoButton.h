@@ -2,6 +2,7 @@
 #define ENTITYUNDOBUTTON_H
 
 #include "entityRectangle.h"
+#include <iostream>
 
 class EntityUndoButton : public EntityRectangle {
 public:

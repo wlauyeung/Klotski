@@ -1,11 +1,12 @@
 #include "entity.h"
 
-Entity::Entity(Model* model, float x, float y, float scaleX, float scaleY, const char* filePath) {
+Entity::Entity(Model* model, float x, float y, float scaleX, float scaleY, int isClickable, const char* filePath) {
 	this->model = model;
 	this->x = x;
 	this->y = y;
 	this->scaleX = scaleX;
 	this->scaleY = scaleY;
+	clickable = isClickable;
 	entityTex = new Texture(filePath);
 	entityTex->mipmapping();
 }
@@ -57,4 +58,8 @@ void Entity::move(float x, float y) {
 
 GLuint Entity::getTextureID() {
 	return entityTex->getTextureID();
+}
+
+int Entity::isClickable() {
+	return clickable;
 }

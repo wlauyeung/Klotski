@@ -28,7 +28,7 @@ Game::~Game() {
 	delete sceneTitle;
 	delete stack;
 	delete startMousePos;
-	glfwDestroyWindow(window);
+	Graphics::destroy();
 	Model::deleteModels();
 }
 
@@ -59,9 +59,13 @@ void Game::start() {
 		glfwPollEvents();
 	}
 
-	glfwDestroyWindow(window);
+	this->~Game();
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
+}
+
+void Game::stop() {
+	glfwDestroyWindow(this->window);
 }
 
 void Game::registerModels() {
@@ -122,13 +126,16 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 		if (action == GLFW_PRESS) {
 			std::vector<Entity*> entities = game->getCurrentScene().getEntities();
 			for (int i = 0; i < entities.size(); i++) {
-				EntityRectangle* e = static_cast<EntityRectangle*>(entities.at(i));
+				Entity* e = entities.at(i);
 				if (x >= e->getX() && x <= e->getX() + e->getScaleX()
 					&& y >= e->getY() && y <= e->getY() + e->getScaleY()) {
-					if (e->isButton()) {
-						e->action();
+					if (EntityUndoButton* button = dynamic_cast<EntityUndoButton*> (e)) {
+						button->action();
 					}
-					else {
+					else if (EntityExitButton* button = dynamic_cast<EntityExitButton*> (e)) {
+						button->action();
+					}
+					else if(e->isClickable()){
 						game->setTaggedEntity(e);
 						startMousePos[0] = (int)x;
 						startMousePos[1] = (int)y;

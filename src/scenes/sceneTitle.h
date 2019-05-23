@@ -5,6 +5,7 @@
 #include "../model.h"
 #include "../entities/entityRectangle.h"
 #include "../entities/entityUndoButton.h"
+#include "../entities/entityExitButton.h"
 
 class SceneTitle : public Scene {
 public:
