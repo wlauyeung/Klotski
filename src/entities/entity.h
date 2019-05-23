@@ -3,10 +3,11 @@
 
 #include "../model.h"
 #include "../color.h"
+#include "../texture.h"
 
 class Entity {
 public:
-	Entity(Model* model, float x, float y, float scaleX, float scaleY, const Color& color);
+	Entity(Model* model, float x, float y, float scaleX, float scaleY, const Color& color, const char* filePath);
 	
 	~Entity(void);
 
@@ -28,10 +29,12 @@ public:
 	void setColor(Color& color);
 
 	void move(float x, float y);
+	GLuint getTextureID(void);
 private:
 	Model* model;
 	float x, y, scaleX, scaleY;
 	Color color;
+	Texture* entityTex;
 };
 
 #endif

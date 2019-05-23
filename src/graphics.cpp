@@ -45,8 +45,10 @@ void Graphics::render(Entity& e) {
 
 	glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(mMat));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
-	glUniformMatrix4fv(colorLoc, 1, GL_FALSE, glm::value_ptr(cMat));
+
+	glBindTexture(GL_TEXTURE_2D, e.getTextureID());
 	glDrawArrays(GL_TRIANGLES, 0, e.getModel().getVerticesSize());
+
 	disableVertexAttribArrays();
 	glUseProgram(0);
 }
@@ -63,13 +65,13 @@ GLuint Graphics::storeBufferData(int attribNumber, GLfloat data[], int size, int
 	return vboID;
 }
 
-GLuint Graphics::genVAO(float* vertices, int size, float* colorCoords, int colorSize) {
+GLuint Graphics::genVAO(float* vertices, int size, float* texCoords, int texCoordsSize) {
 	GLuint vaoID;
 	glGenVertexArrays(1, &vaoID);
 	vaos.push_back(vaoID);
 	glBindVertexArray(vaoID);
 	storeBufferData(0, vertices, size, 3);
-	storeBufferData(1, colorCoords, colorSize, 3);
+	storeBufferData(1, texCoords, texCoordsSize, 2);
 
 	return vaoID;
 }

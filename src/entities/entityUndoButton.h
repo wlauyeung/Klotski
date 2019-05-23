@@ -6,7 +6,7 @@
 
 class EntityUndoButton : public EntityRectangle {
 public:
-	EntityUndoButton(int x, int y, int width, int height, const Color& color);
+	EntityUndoButton(int x, int y, int width, int height, const Color& color, const char* filePath);
 	
 	void action(void);
 
