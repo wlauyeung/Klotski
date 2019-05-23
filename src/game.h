@@ -22,7 +22,8 @@ public:
 	void start(void);
 	void stop(void);
 
-	void moveIsMade(void);
+	std::vector<std::vector<Entity*> >& getGameStack(void);
+	void updateStack(void);
 	void undo(void);
 
 	void setTaggedEntity(Entity* e);

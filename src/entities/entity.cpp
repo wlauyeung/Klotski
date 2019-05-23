@@ -6,6 +6,7 @@ Entity::Entity(Model* model, float x, float y, float scaleX, float scaleY, int i
 	this->y = y;
 	this->scaleX = scaleX;
 	this->scaleY = scaleY;
+	this->filePath = filePath;
 	clickable = isClickable;
 	entityTex = new Texture(filePath);
 	entityTex->mipmapping();
@@ -29,6 +30,10 @@ float Entity::getScaleX() {
 
 float Entity::getScaleY() {
 	return scaleY;
+}
+
+const char* Entity::getFilePath(){
+	return filePath;
 }
 
 Model& Entity::getModel() {

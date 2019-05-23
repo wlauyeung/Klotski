@@ -25,6 +25,8 @@ public:
 	void setScaleX(float scaleX);
 	void setScaleY(float scaleY);
 
+	const char* getFilePath();
+
 	void move(float x, float y);
 	GLuint getTextureID(void);
 
@@ -34,6 +36,8 @@ public:
 private:
 	Model* model;
 	float x, y, scaleX, scaleY;
+	const char* filePath;
+
 	Texture* entityTex;
 	int clickable;
 };

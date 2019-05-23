@@ -50,6 +50,7 @@ void Game::start() {
 	startMousePos = new int[2];
 
 	stack = new Stack();
+	getGameStack().push_back(currentScene->getEntities());
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -96,18 +97,24 @@ void Game::display(GLFWwindow* window) {
 	}
 }
 
-void Game::moveIsMade(){
+std::vector<std::vector<Entity*> >& Game::getGameStack() {
+	return stack->getStack();
+}
+
+void Game::updateStack() {
 	std::vector<Entity*> stackElem;
 
 	for (Entity* e : currentScene->getEntities()) {
 		stackElem.push_back(e);
 	}
-	stack->getStack().push_back(stackElem);
+	getGameStack().push_back(stackElem);
 }
 
 void Game::undo() {
-	currentScene->setEntities(stack->getStack().back());
-	stack->getStack().pop_back();
+	if (getGameStack().size() > 1) {
+		currentScene->setEntities(getGameStack().back());
+		getGameStack().pop_back();
+	}
 }
 
 void Game::setTaggedEntity(Entity* e) {
@@ -130,7 +137,8 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 				if (x >= e->getX() && x <= e->getX() + e->getScaleX()
 					&& y >= e->getY() && y <= e->getY() + e->getScaleY()) {
 					if (EntityUndoButton* button = dynamic_cast<EntityUndoButton*> (e)) {
-						button->action();
+						button->action(game->getGameStack());
+						game->undo();
 					}
 					else if (EntityExitButton* button = dynamic_cast<EntityExitButton*> (e)) {
 						button->action();
@@ -145,30 +153,112 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 			}
 		}
 		else {
+			int collision = 0;
 			if (game->getTaggedEntity()) {
 				if (x - startMousePos[0] != 0
 					&& y - startMousePos[1] != 0) {
+					game->updateStack();
 					if (abs(x - startMousePos[0]) > abs(y - startMousePos[1])) {
 						if (x - startMousePos[0] < 0) {
 							// move left
-							game->getTaggedEntity()->move(-70, 0);
+							for (Entity* e : game->currentScene->getEntities()) {
+								if (e->getFilePath() != "res/board.jpg") {
+									if (
+										(((e->getX() <= game->getTaggedEntity()->getX() - 70) &&
+										((game->getTaggedEntity()->getX() - 70) < (e->getX() + e->getScaleX()))) &&
+
+										(((e->getY() <= game->getTaggedEntity()->getY()) &&
+										(game->getTaggedEntity()->getY() < (e->getY() + e->getScaleY()))) ||
+										(e->getY() < (game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY()) &&
+										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() <= (e->getY() + e->getScaleY()))))) ||
+										(game->getTaggedEntity()->getX() - 70 < 500)
+										)
+									{
+										collision = 1;
+									}
+								}
+							}
+							if (!collision) {
+								game->getTaggedEntity()->move(-70, 0);
+							}
+							collision = 0;
 						}
 						else {
 							// move right
-							game->getTaggedEntity()->move(70, 0);
+							for (Entity* e : game->currentScene->getEntities()) {
+								if (e->getFilePath() != "res/board.jpg") {
+									if (
+										(((e->getX() < game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() + 70) &&
+										((game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() + 70) <= (e->getX() + e->getScaleX()))) &&
+
+										(((e->getY() <= game->getTaggedEntity()->getY()) &&
+										(game->getTaggedEntity()->getY() < (e->getY() + e->getScaleY()))) ||
+										(e->getY() < (game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY()) &&
+										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() <= (e->getY() + e->getScaleY()))))) ||
+										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() + 70 > 780)
+										)
+									{
+										collision = 1;
+									}
+								}
+							}
+							if (!collision) {
+								game->getTaggedEntity()->move(70, 0);
+							}
+							collision = 0;
 						}
 					}
 					else {
 						if (y - startMousePos[1] < 0) {
-							// move dowm
-							game->getTaggedEntity()->move(0, -70);
+							// move up
+							for (Entity* e : game->currentScene->getEntities()) {
+								if (e->getFilePath() != "res/board.jpg") {
+									if (
+										(((e->getY() <= game->getTaggedEntity()->getY() - 70) &&
+										((game->getTaggedEntity()->getY() - 70) < e->getY() + e->getScaleY())) &&
+
+										(((e->getX() <= game->getTaggedEntity()->getX()) &&
+										(game->getTaggedEntity()->getX() < (e->getX() + e->getScaleX()))) ||
+										(e->getX() < (game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX()) &&
+										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() <= (e->getX() + e->getScaleX()))))) ||
+										(game->getTaggedEntity()->getY() - 70 < 160)
+										)
+									{
+										collision = 1;
+									}
+								}
+							}
+							if (!collision) {
+								game->getTaggedEntity()->move(0, -70);
+							}
+							collision = 0;
 						}
 						else {
-							// move up
-							game->getTaggedEntity()->move(0, 70);
+							// move down
+							for (Entity* e : game->currentScene->getEntities()) {
+								if (e->getFilePath() != "res/board.jpg") {
+									if (
+										(((e->getY() < game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() + 70) &&
+										((game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() + 70) <= (e->getY() + e->getScaleY()))) &&
+
+										(((e->getX() <= game->getTaggedEntity()->getX()) &&
+										(game->getTaggedEntity()->getX() < (e->getX() + e->getScaleX()))) ||
+										(e->getX() < (game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX()) &&
+										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() <= (e->getX() + e->getScaleX()))))) ||
+										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleX() + 70 > 510)
+										)
+									{
+										collision = 1;
+									}
+								}
+							}
+							if (!collision) {
+								game->getTaggedEntity()->move(0, 70);
+							}
+							collision = 0;
 						}
 					}
-				}
+}
 			}
 			game->setTaggedEntity(0);
 		}

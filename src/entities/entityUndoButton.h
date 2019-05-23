@@ -8,7 +8,7 @@ class EntityUndoButton : public EntityRectangle {
 public:
 	EntityUndoButton(int x, int y, int width, int height, const char* filePath);
 	
-	void action(void);
+	void action(std::vector<std::vector<Entity*> >&);
 
 private:
 	int button;
