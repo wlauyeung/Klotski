@@ -281,7 +281,7 @@ void Game::onMouseClick(GLFWwindow* window, int button, int action, int mods) {
 										(game->getTaggedEntity()->getX() < (e->getX() + e->getScaleX()))) ||
 										(e->getX() < (game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX()) &&
 										(game->getTaggedEntity()->getX() + game->getTaggedEntity()->getScaleX() <= (e->getX() + e->getScaleX()))))) ||
-										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleX() + 70 > 540)
+										(game->getTaggedEntity()->getY() + game->getTaggedEntity()->getScaleY() + 70 > 540)
 										)
 									{
 										collision = 1;
