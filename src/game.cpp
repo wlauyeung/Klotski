@@ -73,24 +73,12 @@ void Game::registerModels() {
 		1.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f
 	};
+
 	float* rectangleTexCoords = new float[12]{
 		0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
 		1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f
 	};
 
-/*	float* rectangleColorCoords = new float[18] {
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-	};
-
-	Model::RECTANGLE = new Model(rectangleVertices, 18,
-		rectangleColorCoords, 18,
-		Graphics::genVAO(rectangleVertices, 18, rectangleColorCoords, 18));
-*/
 	Model::RECTANGLE = new Model(rectangleVertices, 18,
 		rectangleTexCoords, 12,
 		Graphics::genVAO(rectangleVertices, 18, rectangleTexCoords, 12));
@@ -122,7 +110,7 @@ void Game::setTaggedEntity(Entity* e) {
 	this->taggedEntity = e;
 }
 
-Entity * Game::getTaggedEntity() {
+Entity* Game::getTaggedEntity() {
 	return taggedEntity;
 }
 
