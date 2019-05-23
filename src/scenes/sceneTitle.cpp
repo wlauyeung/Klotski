@@ -20,8 +20,8 @@ void SceneTitle::load() {
 	getEntities().push_back(new EntityRectangle(640, 370, 70, 70, 0, "blue.jpg")); // mid 1x1 right
 	getEntities().push_back(new EntityRectangle(500, 440, 70, 70, 0, "blue.jpg")); // bottom 1x1 left
 	getEntities().push_back(new EntityRectangle(710, 440, 70, 70, 0, "blue.jpg")); // bottom 1x1 right
-	getEntities().push_back(new EntityUndoButton(100, 160, 140, 70, "blue.jpg")); // undo button
-	getEntities().push_back(new EntityRectangle(100, 240, 140, 70, 1, "blue.jpg")); // undo button
+	getEntities().push_back(new EntityUndoButton(100, 160, 140, 70, "undo.png")); // undo button
+	getEntities().push_back(new EntityRectangle(100, 240, 140, 70, 1, "exit.png")); // exit button
 }
 
 void SceneTitle::unload() {
