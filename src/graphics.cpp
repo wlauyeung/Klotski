@@ -12,7 +12,7 @@ void Graphics::init(GLFWwindow* window) {
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
-	pMat = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
+	pMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
 
 	renderingProgram = createShaderProgram("shaders/vertShader.glsl", "shaders/fragShader.glsl");
 }
